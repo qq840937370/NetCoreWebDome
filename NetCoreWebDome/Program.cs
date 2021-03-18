@@ -37,9 +37,8 @@ namespace NetCoreWebDome
 
                 config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                       .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                      .AddJsonFile("Content.json", optional: false, reloadOnChange: false)  // 加载自定义的json-可选:false;重新加载更改:false
+                      .AddJsonFile("Content.json", optional: false, reloadOnChange: false)  // 加载自定义的json-可选:false;重新加载更改（json文件 热更新开关）:false
                       .AddEnvironmentVariables();
-
             })
         #endregion
             .UseStartup<Startup>();         // 为WebHost指定了启动类（新实例.UseStartup<启动类>()）
