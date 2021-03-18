@@ -34,11 +34,11 @@ namespace NetCoreWebDome
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            
-            services.Configure<Content>(Configuration.GetSection("Content"));  // 从appsettings.json配置文件中的Content节点匹配到Content对象
+
+            //services.Configure<Content>(Configuration.GetSection("Content"));  // 从appsettings.json配置文件中的Content节点匹配到Content对象
+            services.Configure<Content>(Configuration.GetSection("ContentList"));    // 从Content.json配置文件中的ContentList节点匹配到Content对象
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);  // 设置兼容性
-
         }
 
         /// <summary>
