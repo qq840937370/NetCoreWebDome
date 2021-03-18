@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NetCoreWebDome.Models;
 
 namespace NetCoreWebDome
 {
@@ -21,39 +22,49 @@ namespace NetCoreWebDome
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// 使用此方法向容器添加服务(此方法由运行时调用)
+        /// </summary>
+        /// <param name="services">服务</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
+            services.Configure<CookiePolicyOptions>(options =>  // 确定请求是否需要非必需cookie的用户同意
             {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                // 此lambda确定给定请求是否需要非必需cookie的用户同意。
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            
+            services.Configure<Content>(Configuration.GetSection("Content"));  // 从appsettings.json配置文件中的Content节点匹配到Content对象
 
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);  // 设置兼容性
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// 使用此方法配置HTTP请求管道(此方法由运行时调用)
+        /// </summary>
+        /// <param name="app">应用程序</param>
+        /// <param name="env">宿主环境</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment())  // 宿主环境
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();  // 注入应用程序
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseExceptionHandler("/Home/Error");  // 应用程序异常处理页
+                // 默认的HSTS值是30天。您可能需要为生产场景更改此设置，请参阅 https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseCookiePolicy();
+            app.UseHttpsRedirection();  // Http协议
+            app.UseStaticFiles();       // 静态文件
+            app.UseCookiePolicy();      // Cookie策略
 
-            app.UseMvc(routes =>
+            // 指定启动页
+            app.UseMvc(routes => 
             {
                 routes.MapRoute(
                     name: "default",
